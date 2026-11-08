@@ -1,0 +1,304 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Half Saints Weekly Party Menu API",
+    "version": "1.0.0",
+    "description": "Public snapshot of the source menu. The example is an excerpt, captured at the time of collection; responses contain the full snapshot."
+  },
+  "paths": {
+    "/api/menu": {
+      "get": {
+        "summary": "Read the latest available menu snapshot",
+        "description": "No parameters. Fetches the latest validated public GitHub snapshot; falls back to the bundled snapshot if it cannot be loaded. A successful remote read does not imply the latest synchronization succeeded. Check fetchedAt and freshness.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Menu and snapshot metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuResponse"
+                },
+                "example": {
+                  "data": {
+                    "sourceUrl": "https://halfsaintvegas.com/pages/this-weeks-party-menu",
+                    "fetchedAt": "2026-11-08T16:05:43.487Z",
+                    "weekEnding": "2026-11-08",
+                    "sections": [
+                      {
+                        "title": "Introduction",
+                        "blocks": [
+                          "*You'll need a confirmation to check in with the guest list moderator. Make sure you have a confirmation text from me before heading out.",
+                          "Ratio example if 1:1 is required:",
+                          "3 girls : 1 guy = free",
+                          "1 girl : 1 guy = free",
+                          "1 girl : 2 guys = 1 guy pays",
+                          "0 girls : 3 guys = 3 guys pay"
+                        ]
+                      }
+                    ],
+                    "events": [
+                      {
+                        "section": "Dayclubs",
+                        "venue": "LAVO BRUNCH @PALAZZO",
+                        "details": "Girls and guys free. Girls open bar free drinks 1pm - 2pm",
+                        "dateText": "Saturday, 11/7",
+                        "description": "HipHop/Top40s"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "text": "https://www.resortsclub.com/petern",
+                        "url": "https://www.resortsclub.com/petern"
+                      }
+                    ]
+                  },
+                  "snapshot": {
+                    "source": "github",
+                    "remoteRead": "ok"
+                  },
+                  "freshness": {
+                    "ageSeconds": 0,
+                    "weekEnding": "2026-11-08",
+                    "status": "not_past_week_ending"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rss.xml": {
+      "get": {
+        "summary": "Read events as RSS 2.0",
+        "description": "No parameters. The channel description reports a remote snapshot read failure and fallback. Items preserve source date text; no publication date is inferred.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "RSS feed",
+            "content": {
+              "application/rss+xml": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\"><channel><title>Half Saints weekly party menu</title><link>https://halfsaintvegas.com/pages/this-weeks-party-menu</link><description>Events from the Half Saints weekly party menu. Snapshot loaded from GitHub.</description><lastBuildDate>Sun, 08 Nov 2026 16:05:43 GMT</lastBuildDate><item><title>LAVO BRUNCH @PALAZZO</title><link>https://halfsaintvegas.com/pages/this-weeks-party-menu</link><guid isPermaLink=\"false\">{&quot;section&quot;:&quot;Dayclubs&quot;,&quot;venue&quot;:&quot;LAVO BRUNCH @PALAZZO&quot;,&quot;details&quot;:&quot;Girls and guys free. Girls open bar free drinks 1pm - 2pm&quot;,&quot;dateText&quot;:&quot;Saturday, 11/7&quot;,&quot;description&quot;:&quot;HipHop/Top40s&quot;}</guid><description>Saturday, 11/7 — Girls and guys free. Girls open bar free drinks 1pm - 2pm — HipHop/Top40s</description></item></channel></rss>"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "Read this OpenAPI document",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OpenAPI 3.1 specification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "openapi": "3.1.0",
+                  "info": {
+                    "title": "Half Saints Weekly Party Menu API",
+                    "version": "1.0.0"
+                  },
+                  "paths": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MenuResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "snapshot",
+          "freshness"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Menu"
+          },
+          "snapshot": {
+            "type": "object",
+            "required": [
+              "source",
+              "remoteRead"
+            ],
+            "properties": {
+              "source": {
+                "enum": [
+                  "github",
+                  "bundled_fallback"
+                ]
+              },
+              "remoteRead": {
+                "enum": [
+                  "ok",
+                  "failed"
+                ]
+              }
+            }
+          },
+          "freshness": {
+            "type": "object",
+            "required": [
+              "ageSeconds",
+              "weekEnding",
+              "status"
+            ],
+            "properties": {
+              "ageSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Seconds since fetchedAt at response time; null if the timestamp is invalid."
+              },
+              "weekEnding": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "status": {
+                "enum": [
+                  "not_past_week_ending",
+                  "past_week_ending",
+                  "unknown"
+                ],
+                "description": "Compares the source week ending with the current America/Los_Angeles calendar date, or unknown if no end date was identified. This is not a synchronization success indicator."
+              }
+            }
+          }
+        }
+      },
+      "Menu": {
+        "type": "object",
+        "required": [
+          "sourceUrl",
+          "fetchedAt",
+          "weekEnding",
+          "sections",
+          "events",
+          "links"
+        ],
+        "properties": {
+          "sourceUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of successful collection, not the source publication time."
+          },
+          "weekEnding": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "title",
+                "blocks"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "blocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "section",
+                "venue",
+                "details",
+                "dateText",
+                "description"
+              ],
+              "properties": {
+                "section": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "venue": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "details": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "dateText": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "text",
+                "url"
+              ],
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

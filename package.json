@@ -1,0 +1,17 @@
+{
+  "name": "half-saints-party-menu",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-menu.mjs",
+    "test": "node --test",
+    "build": "esbuild src/index.js --bundle --format=esm --outfile=dist/_worker.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
