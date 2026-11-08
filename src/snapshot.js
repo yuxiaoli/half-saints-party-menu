@@ -1,4 +1,4 @@
-const SNAPSHOT_URL = 'https://raw.githubusercontent.com/yuxiaoli/half-saints-party-menu/main/data/menu.json';
+const SNAPSHOT_URL = 'https://raw.githubusercontent.com/yuxiaoli/half-saints-party-menu/refs/heads/main/data/menu.json';
 function validMenu(data) {
   const nullableString = value => value === null || typeof value === 'string';
   return data && typeof data.sourceUrl === 'string' && /^https:\/\//.test(data.sourceUrl)
@@ -20,3 +20,4 @@ export async function loadSnapshot(fetcher, bundled) {
     return { menu: bundled, snapshot: { source: 'bundled_fallback', remoteRead: 'failed' } };
   }
 }
+
