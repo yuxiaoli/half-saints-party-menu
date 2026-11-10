@@ -4,6 +4,8 @@ A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaint
 
 ## API
 
+- `GET /` — responsive weekly menu viewer with artist/venue search, party-type and weekday filters, source conditions and explicit freshness/fallback notices. Filter state can be shared through URL parameters. All events remain readable without JavaScript.
+
 - `GET /api/menu` — structured menu and freshness metadata.
 - `GET /rss.xml` — RSS feed.
 - `GET /openapi.json` — OpenAPI description; the source is `docs/api/openapi.json`.
