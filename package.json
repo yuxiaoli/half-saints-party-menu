@@ -10,7 +10,6 @@
     "build:site": "node scripts/build-site.mjs"
   },
   "dependencies": {
-    "chart.js": "4.5.1",
     "cheerio": "^1.1.2"
   },
   "devDependencies": {

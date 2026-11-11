@@ -1,6 +1,6 @@
-# Half Saints menu and charts
+# Half Saints party menu
 
-A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), with a GitHub Pages menu/chart website and a separate existing Cloudflare API. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with Half Saint.
+A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), with a GitHub Pages menu website and a separate existing Cloudflare API. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with Half Saint.
 
 ## Existing API service (unchanged)
 
@@ -18,12 +18,12 @@ The deployed Worker reads the latest committed snapshot from this public reposit
 
 To change Worker code, run `npm run build` and deploy the resulting `dist` directory to the Cloudflare Pages project `half-saints-party-menu`. The weekly data update does not require a Cloudflare API token.
 
-## GitHub Pages menu and charts
+## GitHub Pages menu website
 
-`npm run build:site` generates `site-dist/`: a static menu, local JSON snapshot, RSS and self-hosted Chart.js 4.5.1. No Cloudflare service, KV, secrets or external chart CDN is needed by this website. The existing API/RSS service code and source collector are preserved.
+`npm run build:site` generates `site-dist/`: a responsive, source-backed menu, local JSON snapshot and RSS. The website contains no charts or chart-library dependencies and requires no Cloudflare resources, secrets or external CDN. The existing API/RSS service code and source collector are preserved.
 
-The browser draws weekday, party-type and venue charts from `data/menu.json`. Charts can use the full menu or the active lineup filters. Weekday counts exclude recurring/undated entries rather than assigning invented dates. Charts include readable counts and loading/error/retry states. The browser recalculates menu freshness using the current Las Vegas date. With JavaScript disabled, all published menu cards remain readable.
+Party-type and weekday buttons, search, reset and shareable URL filters make the original listings easy to browse. Each card retains the original artist, venue, date wording, entry conditions and source link. Recurring entries are explicitly marked without assigning invented dates. The browser recalculates freshness using the current Las Vegas date. With JavaScript disabled, all published menu cards remain readable.
 
-`Deploy menu website` publishes via GitHub Pages Actions after a relevant main-branch push or successful `Weekly menu sync`, and also supports manual deployment without another crawl. The collector's existing Monday 18:17 UTC cron is unchanged; there is no additional schedule. `workflow_run` is needed because commits made by the collector's GITHUB_TOKEN do not trigger a second push workflow. Failed collection does not replace the last published menu.
+`Deploy menu website` publishes after a relevant main-branch push or successful `Weekly menu sync`, and supports manual deployment without another crawl. The existing Monday 18:17 UTC cron is unchanged; there is no additional schedule. The workflow_run trigger handles successful snapshot commits made by GITHUB_TOKEN. Failed collection retains the last successful snapshot and published menu.
 
-Pages must be configured to use GitHub Actions. The build uses relative asset/data/feed paths, including under the repository project path. Before release, run `npm ci && npm test && npm run build:site`, inspect the published URL and test filtering and charts at mobile and desktop widths.
+GitHub Pages uses Actions at https://yuxiaoli.github.io/half-saints-party-menu/ . The build uses relative asset/data/feed paths. Verify with `npm ci && npm test && npm run build:site` and desktop/mobile browser checks.
