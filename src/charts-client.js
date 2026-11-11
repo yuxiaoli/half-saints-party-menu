@@ -34,12 +34,12 @@ function render() {
   charts.push(new Chart(document.querySelector('#weekday-chart'), { type: 'bar', data: { labels: DAYS.map(d => d.slice(0, 3)), datasets: [{ label: 'Dated listings', data: data.weekdays, backgroundColor: '#7a6cab', borderRadius: 2, maxBarThickness: 42 }] }, options: { ...common, scales } }));
   charts.push(new Chart(document.querySelector('#category-chart'), { type: 'doughnut', data: { labels: CATEGORIES, datasets: [{ label: 'Listings', data: data.categories, backgroundColor: colors, borderColor: '#fcfaf5', borderWidth: 4 }] }, options: { ...common, cutout: '68%', plugins: { ...common.plugins, legend: { display: true, position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } } } } }));
   document.querySelector('#venue-frame').style.height = `${Math.max(220, data.venues.length * 30 + 45)}px`;
-  charts.push(new Chart(document.querySelector('#venue-chart'), { type: 'bar', data: { labels: data.venues.map(v => v.name), datasets: [{ label: 'Listings', data: data.venues.map(v => v.count), backgroundColor: '#899b24', borderRadius: 2, maxBarThickness: 18 }] }, options: { ...common, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Listings' }, border: { display: false } }, y: { grid: { display: false }, ticks: { font: { size: innerWidth < 500 ? 8 : 10 } }, border: { display: false } } } } }));
+  charts.push(new Chart(document.querySelector('#venue-chart'), { type: 'bar', data: { labels: data.venues.map(v => innerWidth < 500 && v.name.includes('@') ? [v.name.split('@')[0].trim(), '@' + v.name.split('@').slice(1).join('@')] : v.name), datasets: [{ label: 'Listings', data: data.venues.map(v => v.count), backgroundColor: '#899b24', borderRadius: 2, maxBarThickness: 18 }] }, options: { ...common, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Listings' }, border: { display: false } }, y: { grid: { display: false }, ticks: { font: { size: innerWidth < 500 ? 9 : 10 } }, border: { display: false } } } } }));
   const readable = document.querySelector('#chart-data'); readable.replaceChildren();
-  [['Dated listings by weekday', DAYS.map((d, i) => `${d}: ${data.weekdays[i]}`)], ['Listings by party type', CATEGORIES.map((c, i) => `${c}: ${data.categories[i]}`)], ['Listings by venue', data.venues.map(v => `${v.name}: ${v.count}`)]].forEach(([title, values]) => { const p = document.createElement('p'); const strong = document.createElement('strong'); strong.textContent = title; p.append(strong, document.createElement('br'), document.createTextNode(values.join(' · '))); readable.append(p); });
+  [['Dated listings by weekday', DAYS.map((d, i) => `${d}: ${data.weekdays[i]}`)], ['Listings by party type', CATEGORIES.map((c, i) => `${c}: ${data.categories[i]}`)], ['Listings by venue', data.venues.map(v => `${v.name}: ${v.count}`)]].forEach(([title, values]) => { const p = document.createElement('p'); const strong = document.createElement('strong'); strong.textContent = title; p.append(strong, document.createElement('br'), document.createTextNode(values.join(' �� '))); readable.append(p); });
 }
 async function load() {
-  status.textContent = 'Loading the published menu snapshot…'; retry.hidden = true;
+  status.textContent = 'Loading the published menu snapshot��'; retry.hidden = true;
   try {
     const response = await fetch('./data/menu.json', { cache: 'no-cache', signal: AbortSignal.timeout(15000) });
     if (!response.ok) throw new Error('snapshot unavailable');
@@ -47,7 +47,7 @@ async function load() {
     if (!Array.isArray(value.events) || !value.events.length || !Number.isFinite(Date.parse(value.fetchedAt))) throw new Error('invalid snapshot');
     if (value.fetchedAt !== document.querySelector('#charts').dataset.snapshot) throw new Error('snapshot changed during deployment; reload this page');
     menu = value; refreshFreshness(); figures.hidden = false; render();
-    status.textContent = `Snapshot collected ${new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Los_Angeles' }).format(new Date(menu.fetchedAt))} · Las Vegas time. Hover or tap a chart to inspect counts.`;
+    status.textContent = `Snapshot collected ${new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Los_Angeles' }).format(new Date(menu.fetchedAt))} �� Las Vegas time. Hover or tap a chart to inspect counts.`;
   } catch (error) {
     status.textContent = menu ? 'Refresh failed. Keeping the last successfully loaded charts and collection timestamp.' : 'Charts could not load. The published lineup remains available below. Retry, or reload the page if a new snapshot was just published.';
     retry.hidden = false;
@@ -59,3 +59,4 @@ retry.addEventListener('click', load);
 refreshFreshness({ weekEnding: document.querySelector('#charts').dataset.weekEnding || null });
 load();
 setInterval(() => { if (menu) refreshFreshness(); }, 60000);
+
