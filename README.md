@@ -1,10 +1,8 @@
-# Half Saints party menu API
+# Half Saints menu and charts
 
-A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), served on Cloudflare Pages. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with Half Saint.
+A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), with a GitHub Pages menu/chart website and a separate existing Cloudflare API. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with Half Saint.
 
-## API
-
-- `GET /` — responsive weekly menu viewer with artist/venue search, party-type and weekday filters, source conditions and explicit freshness/fallback notices. Filter state can be shared through URL parameters. All events remain readable without JavaScript.
+## Existing API service (unchanged)
 
 - `GET /api/menu` — structured menu and freshness metadata.
 - `GET /rss.xml` — RSS feed.
