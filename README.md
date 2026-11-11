@@ -1,6 +1,6 @@
-# Half Saints party menu
+# Vegas Parties
 
-A source-backed snapshot of the [Half Saint weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), with a GitHub Pages menu website and a separate existing Cloudflare API. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with Half Saint.
+A source-backed snapshot of the [original weekly party menu](https://halfsaintvegas.com/pages/this-weeks-party-menu), with a GitHub Pages menu website and a separate existing Cloudflare API. The source can contain past dates or change structure; the service reports what was observed rather than asserting that it is current. It is not affiliated with the original publisher or venues.
 
 ## Existing API service (unchanged)
 
@@ -19,6 +19,8 @@ The deployed Worker reads the latest committed snapshot from this public reposit
 To change Worker code, run `npm run build` and deploy the resulting `dist` directory to the Cloudflare Pages project `half-saints-party-menu`. The weekly data update does not require a Cloudflare API token.
 
 ## GitHub Pages menu website
+
+The public page is branded **Vegas Parties**, including its title, sharing metadata, header and footer. Source names are not displayed as site branding; original source links and collected data remain unchanged.
 
 `npm run build:site` generates `site-dist/`: a responsive, source-backed menu, local JSON snapshot and RSS. The website contains no charts or chart-library dependencies and requires no Cloudflare resources, secrets or external CDN. The existing API/RSS service code and source collector are preserved.
 
