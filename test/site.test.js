@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { load } from 'cheerio';
 import assert from 'node:assert/strict';
 import menu from '../data/menu.json' with { type: 'json' };
 import { renderSite, eventDays } from '../src/site.js';
@@ -12,7 +13,7 @@ test('home renders every source event, source link and existing API links', () =
   for (const path of ['/api/menu', '/rss.xml', '/openapi.json']) assert.ok(html.includes(`href="${path}"`));
   assert.ok(html.includes(menu.sourceUrl));
   assert.match(html, /Current menu week/);
-  assert.match(html, /Not affiliated with Half Saint/);
+  assert.match(html, /Not affiliated with the original publisher or venues/);
 });
 
 test('day matching supports single days, ranges and wraparound without inventing dates', () => {
@@ -53,4 +54,23 @@ test('home retains non-event source sections and useful no-JavaScript content', 
   assert.match(html, /id="filters" hidden/);
   assert.match(html, /aria-live="polite"/);
   assert.match(html, /prefers-reduced-motion/);
+});
+
+
+test('Vegas Parties branding replaces the source name throughout the page', () => {
+  const $ = load(renderSite(menu, current, now));
+  assert.equal($('title').text(), 'Vegas Parties · Your weekly party menu');
+  assert.match($('.wordmark').text(), /VEGAS PARTIES/);
+  assert.match($('.footer-brand').text(), /VEGAS PARTIES/);
+  assert.equal($('#hero-title').text(), 'Your week.In Vegas.');
+  assert.doesNotMatch($('body').text(), /saint/i);
+  for (const element of $('meta[content], [aria-label], [title]').toArray()) {
+    for (const attribute of ['content', 'aria-label', 'title']) {
+      assert.doesNotMatch($(element).attr(attribute) || '', /saint/i);
+    }
+  }
+  assert.equal($('meta[property="og:title"]').attr('content'), $('title').text());
+  assert.equal($('link[rel="alternate"]').attr('href'), '/rss.xml');
+  assert.equal($('.nav-source').attr('href'), menu.sourceUrl);
+  assert.equal($('.source-link').length, menu.events.length);
 });
